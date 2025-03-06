@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Teste de Velocidade da Internet</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      display: flex; align-items: center; justify-content: center; height: 100vh;
+      font-family: 'Roboto', sans-serif; background-color: #121212; color: #E0E0E0;
+    }
+
+    .container {
+      text-align: center; max-width: 600px; padding: 20px; border-radius: 12px;
+      background: linear-gradient(145deg, #1d1d1d, #0d0d0d);
+      box-shadow: 10px 10px 20px #0a0a0a, -10px -10px 20px #1a1a1a;
+    }
+
+    h1 { font-size: 2rem; font-weight: 500; margin-bottom: 10px; color: #FFFFFF; }
+    p { font-size: 1rem; font-weight: 300; margin-bottom: 20px; color: #A0A0A0; }
+
+    button {
+      padding: 12px 30px; font-size: 1rem; font-weight: 400; cursor: pointer;
+      background: #3a3a3a; color: #FFFFFF; border: none; border-radius: 25px;
+      transition: all 0.3s ease; box-shadow: 5px 5px 10px #0a0a0a, -5px -5px 10px #1a1a1a;
+      margin-top: 20px;
+    }
+    
+    button:hover { background: #505050; transform: scale(1.05); }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Teste de Velocidade</h1>
+    <p>Velocidade de Download:</p>
+    <h2 id="downloadSpeed">-- Mbps</h2>
+    <p>Velocidade de Upload:</p>
+    <h2 id="uploadSpeed">-- Mbps</h2>
+    <p>Tempo estimado para baixar 1GB:</p>
+    <h2 id="downloadTime">-- segundos</h2>
+    <button id="startTest">Iniciar Teste</button>
+  </div>
+
+  <script>
+    document.getElementById('startTest').addEventListener('click', function() {
+      measureSpeed('download');
+      measureSpeed('upload');
+    });
+
+    function measureSpeed(type) {
+      const startTime = performance.now();
+      fetch("https://www.google.com", { mode: 'no-cors' }).then(() => {
+        const endTime = performance.now();
+        const latency = (endTime - startTime) / 1000; // Tempo em segundos
+        const speedMbps = (1 / latency * 10).toFixed(2); // Estimativa simples
+        
+        if (type === 'download') {
+          document.getElementById('downloadSpeed').innerText = `${speedMbps} Mbps`;
+          const timeToDownload1GB = (1000 / speedMbps).toFixed(2);
+          document.getElementById('downloadTime').innerText = `${timeToDownload1GB} segundos`;
+        } else {
+          document.getElementById('uploadSpeed').innerText = `${speedMbps} Mbps`;
+        }
+      }).catch(() => {
+        if (type === 'download') {
+          document.getElementById('downloadSpeed').innerText = "Erro ao medir velocidade";
+        } else {
+          document.getElementById('uploadSpeed').innerText = "Erro ao medir velocidade";
+        }
+      });
+    }
+  </script>
+</body>
+</html>
